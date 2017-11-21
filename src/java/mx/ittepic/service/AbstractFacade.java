@@ -7,12 +7,17 @@ package mx.ittepic.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import mx.ittepic.entities.Role;
 
 /**
  *
@@ -28,12 +33,36 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
 
-    public void create(T s) {
-        getEntityManager().persist(s);
+    public void create(JsonObject s) {
+        Role r = new Role();
+        r.setRolename(s.getString("rolename"));
+        r.setSalary(s.getInt("salary"));
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date fecha = new Date();
+        try{
+        fecha = dateFormat.parse(s.getString("createdat"));
+        }catch(ParseException e){
+            System.out.println(e.getMessage());
+        }
+        r.setCreatedat(fecha);
+        getEntityManager().persist(r);
     }
 
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
+    public void edit(Object i, JsonObject s) {
+        Role r = (Role) find(i);
+        r.setRolename(s.getString("rolename"));
+        r.setSalary(s.getInt("salary"));
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date fecha = new Date();
+        try{
+        fecha = dateFormat.parse(s.getString("createdat"));
+        }catch(ParseException e){
+            System.out.println(e.getMessage());
+        }
+        r.setCreatedat(fecha);
+        getEntityManager().merge(r);
     }
 
     public void remove(T entity) {
@@ -55,29 +84,9 @@ public abstract class AbstractFacade<T> {
         Gson gson = builder.create();
         Query q;
         q = getEntityManager().createNamedQuery(entityClass.getSimpleName() + ".findAll");
-//        return gson.toJson(q.getResultList());
         return gson.toJson(q.getResultList());
-//        return q.getResultList();
-//        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-//        cq.select(cq.from(entityClass));
-//        return getEntityManager().createQuery(cq).getResultList();
     }
 
-    public List<T> findRange(int[] range) {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0] + 1);
-        q.setFirstResult(range[0]);
-        return q.getResultList();
-    }
-
-    public int count() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
-        cq.select(getEntityManager().getCriteriaBuilder().count(rt));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        return ((Long) q.getSingleResult()).intValue();
-    }
+   
     
 }

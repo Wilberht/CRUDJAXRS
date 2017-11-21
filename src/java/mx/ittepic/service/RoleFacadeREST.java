@@ -7,9 +7,9 @@ package mx.ittepic.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -43,7 +43,7 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @POST
     @Override
     @Consumes({"application/json"})
-    public void create(Role s) {
+    public void create(JsonObject s) {
         super.create(s);
     }
 
@@ -51,8 +51,7 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @Path("/actualizar/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, JsonObject e) {
-        
-        super.edit(new Role());
+        super.edit(id,e);
     }
 
     @DELETE
@@ -81,19 +80,6 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
         return gson.toJson(getEntityManager().createQuery(cq).getResultList());
     }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Role> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
 
     @Override
     protected EntityManager getEntityManager() {
