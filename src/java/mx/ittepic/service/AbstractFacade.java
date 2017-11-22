@@ -38,8 +38,8 @@ public abstract class AbstractFacade<T> {
         r.setRolename(s.getString("rolename"));
         r.setSalary(s.getInt("salary"));
         
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date fecha = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date fecha = null;
         try{
         fecha = dateFormat.parse(s.getString("createdat"));
         }catch(ParseException e){
@@ -54,8 +54,8 @@ public abstract class AbstractFacade<T> {
         r.setRolename(s.getString("rolename"));
         r.setSalary(s.getInt("salary"));
         
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date fecha = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date fecha = null;
         try{
         fecha = dateFormat.parse(s.getString("createdat"));
         }catch(ParseException e){
